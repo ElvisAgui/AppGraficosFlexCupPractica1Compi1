@@ -1,6 +1,8 @@
 package com.compiladores.graficoslexcup.report
 
-class ContGraficos {
+import java.io.Serializable
+
+class ContGraficos: Serializable {
     var contGraficosBarra: Int = 0
     var contGraficosPie: Int = 0
 
@@ -9,5 +11,7 @@ class ContGraficos {
         this.contGraficosBarra = contGraficosBarra
         this.contGraficosPie = contGraficosPie
     }
+
+
 
 }

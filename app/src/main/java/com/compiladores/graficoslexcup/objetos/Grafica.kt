@@ -1,6 +1,10 @@
 package com.compiladores.graficoslexcup.objetos
 
-open class Grafica {
+import com.compiladores.graficoslexcup.analizadores.LexerAnalysis
+import com.compiladores.graficoslexcup.report.ErrorSinLex
+import java.io.Serializable
+
+open class Grafica : Serializable {
     var titulo: String? = null
     var ejecutar = false
     var esCantidad = false
@@ -83,6 +87,7 @@ open class Grafica {
         else
             return false
     }
+
     /**
      * convirte esta misma grafica a barra o pie
      */
@@ -92,6 +97,7 @@ open class Grafica {
         else
             return Pie(this.titulo,this.esCantidad,this.total,this.extra,this.tuplas,this.items,this.valores)
     }
+
     /**
      * reinicia los valores de la grafica para capturar otras especificaciones
      */
@@ -108,4 +114,26 @@ open class Grafica {
         this.yaTipo = false
     }
 
+    /**
+     * activa la ejecucion de una grafica
+     */
+    fun activarEjecucion(graficas: MutableList<Grafica>, tituloEjec: String){
+        graficas.forEach(){
+            if (it.titulo == tituloEjec){
+                it.ejecutar = true
+                return
+            }
+        }
+    }
+
+    /**
+     * une los errores sintaxicos con los errores lexicos
+     */
+    fun  unionErroresLexiconConSintacticos(lexicanError: MutableList<ErrorSinLex>, sintacError: MutableList<ErrorSinLex>){
+        lexicanError.forEach(){
+            sintacError.add(it)
+        }
+        LexerAnalysis.errorsSinLexs.clear()
+
+    }
 }

@@ -4,72 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00BCD4"
+    android:background="#0A83ED"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textPrincipal"
-        android:layout_width="292dp"
-        android:layout_height="49dp"
+        android:layout_width="379dp"
+        android:layout_height="98dp"
         android:autoText="false"
         android:background="#2196F3"
-        android:text="BIENBENIDO!!"
+        android:text="Apliacion para graficar en base a un texto de definicion de graficos"
         android:textColor="#3F51B5"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102"
         tools:ignore="TextContrastCheck" />
 
-    <Button
-        android:id="@+id/archivoButton"
-        android:layout_width="228dp"
-        android:layout_height="78dp"
-        android:text="Abrir archivo de Texto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textPrincipal"
-        app:layout_constraintVertical_bias="0.098" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/archivoButton"
-        app:layout_constraintVertical_bias="0.724" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="397dp"
-        android:layout_height="240dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/archivoButton">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="291dp"
-            android:hint="hint" />
-    </com.google.android.material.textfield.TextInputLayout>
-
     <EditText
-        android:id="@+id/editTextTextMultiLine"
-        android:layout_width="355dp"
-        android:layout_height="84dp"
+        android:id="@+id/areaText"
+        android:layout_width="394dp"
+        android:layout_height="426dp"
+        android:autoText="false"
+        android:background="#03DFFB"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="Ingresa tu texto"
         android:inputType="textMultiLine"
+        android:textColor="#1636E6"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.774"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textPrincipal"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <Button
+        android:id="@+id/graficarButton"
+        android:layout_width="147dp"
+        android:layout_height="60dp"
+        android:onClick="onClick"
+        android:text="Generar Graficos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textPrincipal"
+        app:layout_constraintVertical_bias="0.975" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

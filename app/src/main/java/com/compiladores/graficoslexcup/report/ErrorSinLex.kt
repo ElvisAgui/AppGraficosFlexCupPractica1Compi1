@@ -1,13 +1,15 @@
 package com.compiladores.graficoslexcup.report
 
-class Error {
+import com.compiladores.graficoslexcup.objetos.Grafica
+
+class ErrorSinLex {
     var lexeme: String?= null
     var linea: Int?= null
     var columna: Int?= null
     var descripcion: String?= null
     var esSintactico = false
 
-    constructor()
+
     constructor(lexeme: String?, linea: Int?, columna: Int?, descripcion: String?) {
         this.lexeme = lexeme
         this.linea = linea

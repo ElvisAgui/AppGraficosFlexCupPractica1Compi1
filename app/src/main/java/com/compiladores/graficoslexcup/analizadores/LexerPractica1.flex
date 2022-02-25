@@ -1,6 +1,9 @@
 /*primer seccion: codigo de usuario*/
 package com.compiladores.graficoslexcup.analizadores;
 import java_cup.runtime.*;
+import com.compiladores.graficoslexcup.report.ErrorSinLex;
+import java.util.ArrayList;
+import java.util.List;
 %%
 
  /*segunda seccion: configuracion*/
@@ -23,7 +26,7 @@ SIGNO_POR = "*"
 SIGNO_DIVISION = "/"
 SIGNO_PARENTESISA = "\("
 SIGNO_PARENTESISC ="\)"
-SIGNO_LLAVEA = "{"
+SIGNO_LLAVEA = "\{"
 SIGNO_LLAVEC = "\}"
 SIGNO_CORCHETEA= "\["
 SIGNO_CORCHETEC= "\]"
@@ -57,10 +60,18 @@ IDD_SIMPLE = (({LETRA}|{NUMERO})*({LETRA})({LETRA}|{NUMERO})*)
 /*comodin %{ para agregar codigo java*/
 %{
     /*inicializar arreglo para errores lexico y registrarlos*/
+    public static ArrayList<ErrorSinLex> errorsSinLexs = new ArrayList<>();
 
     private Symbol symbol(int type, String lexema) {
         return new Symbol(type, new Token(lexema, yyline + 1, yycolumn + 1));
     }
+
+    /*
+    public ArrayList<ErrorSinLex> getErrorsSinLexs() {
+    return errorsSinLexs;
+    }
+    */
+    
 %}
 
 /*accion al finlizar el texto*/
@@ -99,12 +110,14 @@ IDD_SIMPLE = (({LETRA}|{NUMERO})*({LETRA})({LETRA}|{NUMERO})*)
 {ETIQUETAS} {return symbol(sym.ETIQUETAS,yytext());}
 {VALORES} {return symbol(sym.VALORES,yytext());}
 {UNIR} {return symbol(sym.UNIR,yytext());}
+{CANTIDAD} {return symbol(sym.CANTIDAD,yytext());}
+{PORCENTAJE} {return symbol(sym.PORCENTAJE,yytext());}
 {TIPO} {return symbol(sym.TIPO,yytext());}
 {TOTAL} {return symbol(sym.TOTAL,yytext());}
 {EXTRA} {return symbol(sym.EXTRA,yytext());}
 {EJECUTAR} {return symbol(sym.EJECUTAR,yytext());}
 {IDD_COMILLAS} {return symbol(sym.IDD_COMILLAS,yytext());}
-{IDD_SIMPLE} {/*marcar como error*/System.out.println(yytext()+ " es un error Lexico"); }
+{IDD_SIMPLE} {LexerAnalysis.errorsSinLexs.add(new ErrorSinLex(yytext(), yyline+1, yycolumn+1, "Simbolo no existe en el lenguaje")); }
 {NUMERO} {return symbol(sym.SIGNO_DIVISION,yytext());}
 {DECIMAL} {return symbol(sym.SIGNO_DIVISION,yytext());}
 }
@@ -115,7 +128,7 @@ IDD_SIMPLE = (({LETRA}|{NUMERO})*({LETRA})({LETRA}|{NUMERO})*)
 [^] {;}
 }
 
-[^]                              {System.out.println(yytext()+ " es un error Lexico");}
+[^]                              {LexerAnalysis.errorsSinLexs.add(new ErrorSinLex(yytext(), yyline+1, yycolumn+1, "Simbolo no existe en el lenguaje"));}
 
 
 
