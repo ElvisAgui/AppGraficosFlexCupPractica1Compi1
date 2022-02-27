@@ -61,6 +61,7 @@ open class Grafica : Serializable {
         return this.titulo == null
     }
     fun controTuplas(): Boolean{
+
         contadorDeProduciones++
         return this.titulo == null
     }
@@ -97,6 +98,13 @@ open class Grafica : Serializable {
         else
             return Pie(this.titulo,this.esCantidad,this.total,this.extra,this.tuplas,this.items,this.valores)
     }
+
+    fun completoBarra(): Boolean{
+        return this.titulo!=null && !this.tuplas.isEmpty() && !this.items.isEmpty() && !this.valores.isEmpty()
+    }
+
+
+
 
     /**
      * reinicia los valores de la grafica para capturar otras especificaciones
@@ -135,5 +143,9 @@ open class Grafica : Serializable {
         }
         LexerAnalysis.errorsSinLexs.clear()
 
+    }
+
+    override fun toString(): String {
+        return "Grafica(titulo=$titulo, ejecutar=$ejecutar, esCantidad=$esCantidad, total=$total, extra=$extra, tuplas=$tuplas, items=$items, valores=$valores, contadorDeProduciones=$contadorDeProduciones, yaTipo=$yaTipo)"
     }
 }

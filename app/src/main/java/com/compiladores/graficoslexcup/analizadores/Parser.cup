@@ -8,11 +8,10 @@ import java.util.List;
 
 /* Codigo java del parser*/
 parser code {:
+
+/*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*/
 	
 	private ArrayList<Grafica> graficas=new ArrayList<>();
-	private ArrayList<String> items =new ArrayList<>();
-	private ArrayList<Double> valores=new ArrayList<>();
-	private ArrayList<Tupla> tuplas=new ArrayList<>();
 	private Grafica grafica = new Grafica();
 	private boolean errorRepeticion;
 	private ArrayList<ErrorSinLex> errorsSinLexs = new ArrayList<>();
@@ -20,6 +19,7 @@ parser code {:
 	private ArrayList<Operation> operations = new ArrayList<>();
 	private int contadorBarra = 0;
 	private int contadorPie = 0;
+	private ManejadorGraficos manejadorGraficos = new ManejadorGraficos();
 
 	 /* Connect this parser to a scanner!*/
 	public parser(LexerAnalysis analizadorLexico) {
@@ -51,42 +51,57 @@ parser code {:
 		return lexeme = lexeme.replace("\"", "");
 	}
 
-	 @Override
-    public List<Integer> expected_token_ids() {
-        return super.expected_token_ids();
-    }
-
 	/*
 	*apartado para manejo de errores
 	*/
 
 	public void reportError(String tipo){
 		if(errorRepeticion){
-			//reportar error repeticion 
-			List<Integer> listEscape=expected_token_ids();
-			String descripcion = "este elemento esta repetido: "+ sym.terminalNames[listEscape.get(0)];
-			errorsSinLexs.add(new ErrorSinLex(tipo,0,0,descripcion, true));
-			errorRepeticion = false;
+			try{
+				//reportar error repeticion 
+				String descripcion = "este elemento esta repetido: "+tipo;
+				errorsSinLexs.add(new ErrorSinLex("error de repeticion o dato faltante ",0,0,descripcion, true));
+				errorRepeticion = false;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
 	public void reportErrorElementFaltante(String tipo){
 		if(errorRepeticion){
-			//reportar error repeticion 
-			List<Integer> listEscape=expected_token_ids();
-			String descripcion = "Grafica con datos faltantes: "+ sym.terminalNames[listEscape.get(0)];
-			errorsSinLexs.add(new ErrorSinLex(tipo,0,0, descripcion, true));
-			errorRepeticion = false;
+			try{
+				//reportar error repeticion 
+				String descripcion = "Grafica con datos faltantes en grafica: "+tipo;
+				errorsSinLexs.add(new ErrorSinLex("erro repeticion o dato faltante",0,0, descripcion, true));
+				errorRepeticion = false;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
 	@Override
         public void syntax_error(Symbol tok) {
-			Token token = (Token) tok.value;
-			List<Integer> listEscape=expected_token_ids();
-			String descripcion = "Se esperaba "+ sym.terminalNames[listEscape.get(0)];
-			errorsSinLexs.add(new ErrorSinLex(token.getLexeme(), token.getLine(), token.getColumn(), descripcion, true));
+			try{
+				List<Integer> listEscape=expected_token_ids();
+				Token token = (Token) tok.value;
+				report_error("Error Sintactico con el  Token:"+ token.getLexeme()+" este no pertenece a la estructura - linea: "+token.getLine()+" - columna: "+token.getColumn() + "\n",null);
+				String descripcion = "Se esperaba "+ listEscape.get(0);
+				errorsSinLexs.add(new ErrorSinLex(token.getLexeme(), token.getLine(), token.getColumn(), descripcion, true));
+			}catch(Exception e){
+					e.printStackTrace();
+			}
+			
 		}
+
+	 @Override
+    public List<Integer> expected_token_ids() {
+        return super.expected_token_ids();
+    }
+
 
 	
 :};
@@ -94,138 +109,140 @@ parser code {:
 
 /*seccion de Terminales*/
 
-terminal Token SIGNO_MENOS, SIGNO_MAS, SIGNO_POR, SIGNO_DIVISION, SIGNO_PARENTESISA, SIGNO_PARENTESISC, SIGNO_LLAVEA, SIGNO_LLAVEC, SIGNO_CORCHETEA, SIGNO_CORCHETEC;
-terminal Token SIGNO_COMA, SIGNO_PUNTOCOMA, SIGNO_DOPUNTO, NUMERO, DECIMAL, DEF, BARRAS, PIE, TITULO, EJEX, EJEY, ETIQUETAS, VALORES, CANTIDAD;
-terminal Token PORCENTAJE, UNIR, TIPO, TOTAL, EXTRA, EJECUTAR, IDD_COMILLAS;
+terminal Token MENOS, MAS, POR, DIVISION, PARENTESISA, PARENTESISC, LLAVEA, LLAVEC, CORCHETEA, CORCHETEC ;
+terminal Token COMA, PUNTOCOMA, DOPUNTO, NUMERO, DECIMAL, DEF, BARRAS, PIE, TITULO, EJEX, EJEY, ETIQUETAS, VALORES, CANTIDAD;
+terminal Token PORCENTAJE, UNIR, TIPO, TOTAL, EXTRA, EJECUTAR, IDD;
 
 
 /*seccion de No Terminales*/
 
-non terminal q_inicial, a_barra, b_pie, title, y_eje, unir, x_eje, val, etiquet, p_tipo, f_ejecutar, n_consecutivos, i_tems, l_total, r_extra, h_tupla; 
+non terminal q_inicial, comodin_a, comodin_b, a_barra, b_pie, title, y_eje, unir, x_eje, val, etiquet, p_tipo, f_ejecutar, n_consecutivos, i_tems, l_total, r_extra, h_tupla; 
 non terminal Integer operation, o_decimal;
 
 
 /* agregado de precedencias */
 
-precedence left SIGNO_MENOS, SIGNO_MAS;
-precedence left SIGNO_POR, SIGNO_DIVISION;
+precedence left MENOS, MAS;
+precedence left POR, DIVISION;
 
 /* seccion de Gramatica : */
 
 start with  q_inicial;
 
 /*General Gramatica*/
- q_inicial ::= DEF BARRAS SIGNO_LLAVEA a_barra SIGNO_LLAVEC  q_inicial		{:graficas.add(grafica.convertGrafica(true));  grafica.limpiarGrafica(); contadorBarra++;:}
-	| DEF PIE SIGNO_LLAVEA b_pie SIGNO_LLAVEC  q_inicial					{:graficas.add(grafica.convertGrafica(false)); grafica.limpiarGrafica(); contadorPie++;:}
-	| DEF PIE SIGNO_LLAVEA b_pie SIGNO_LLAVEC f_ejecutar 					{:graficas.add(grafica.convertGrafica(false)); grafica.limpiarGrafica(); contadorPie++;:}
-	| DEF BARRAS SIGNO_LLAVEA a_barra SIGNO_LLAVEC f_ejecutar				{:graficas.add(grafica.convertGrafica(true));  grafica.limpiarGrafica();  contadorBarra++;:}
-	| error																	{:/* capturar error @overide, recuperacion*/:}
+ q_inicial ::= DEF BARRAS LLAVEA comodin_a LLAVEC  q_inicial		{::}
+	| DEF PIE LLAVEA comodin_b LLAVEC  q_inicial					{::}
+	| DEF PIE LLAVEA comodin_b LLAVEC f_ejecutar 					{::}
+	| DEF BARRAS LLAVEA comodin_a LLAVEC f_ejecutar				    {::}
+	| error															{:/* capturar error @overide, recuperacion*/:}
 	;
 
+comodin_a ::= a_barra {:graficas.add(new Barra(grafica.getTitulo(),grafica.getTuplas(),grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorBarra++; :}
+;
 /*Estructura A*/
 a_barra ::= title a_barra	{:reportError("Titulo");:} 
-	| y_eje a_barra			{:reportError("ejey");:}
-	| unir a_barra			{:reportError("unir");:}
-	| x_eje a_barra			{:reportError("ejex");:}
+	| y_eje a_barra			{:reportError("ejey"); :}
+	| unir a_barra			{:reportError("unir"); :}
+	| x_eje a_barra			{:reportError("ejex"); :}
 	| error a_barra			{:/* capturar error @overide, recuperacion*/:}
-	|						{:errorRepeticion = !grafica.veriricaionElementosBarra(); reportErrorElementFaltante("Barra");:}
+	|						{:errorRepeticion = !grafica.veriricaionElementosBarra(); reportErrorElementFaltante("Barra"); :}
 	;
 
+comodin_b ::= b_pie {:graficas.add(new Pie(grafica.getTitulo(),grafica.getEsCantidad(), grafica.getTotal(), grafica.getExtra(), grafica.getTuplas(), grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorPie++;:}
+;
 /*Estructura B*/
 b_pie ::= title b_pie	{:reportError("Titulo");:}
-	| p_tipo b_pie		{:reportError("Titulo");:}
-	| etiquet b_pie		{:reportError("Titulo");:}
-	| val b_pie			{:reportError("Titulo");:}
-	| l_total b_pie		{:reportError("Titulo");:}
-	| unir b_pie		{:reportError("Titulo");:}
-	| r_extra b_pie		{:reportError("Titulo");:}
+	| p_tipo b_pie		{:reportError("tipo");:}
+	| etiquet b_pie		{:reportError("etiqueta");:}
+	| val b_pie			{:reportError("valores");:}
+	| l_total b_pie		{:reportError("total");:}
+	| unir b_pie		{:reportError("Unir");:}
+	| r_extra b_pie		{:reportError("Extra");:}
 	| error	b_pie		{:/* capturar error @overide, recuperacion*/:}
 	|					{:errorRepeticion = !grafica.veriricaionElementosPie(); reportErrorElementFaltante("Pie");:}
 	;
 
 /*Gramatica Etiquetas*/
-etiquet ::= ETIQUETAS SIGNO_DOPUNTO SIGNO_CORCHETEA i_tems SIGNO_CORCHETEC SIGNO_PUNTOCOMA		
-{:errorRepeticion = !grafica.controItems(); grafica.setItems(items); items.clear();:}
+etiquet ::= ETIQUETAS DOPUNTO CORCHETEA i_tems CORCHETEC PUNTOCOMA		
+{:errorRepeticion = !grafica.controItems();:}
 	;
 
 /*Gramatica valores*/
-val ::= VALORES SIGNO_DOPUNTO SIGNO_CORCHETEA n_consecutivos SIGNO_CORCHETEC SIGNO_PUNTOCOMA		
-{:errorRepeticion = !grafica.controValores(); grafica.setValores(valores); valores.clear();:}
+val ::= VALORES DOPUNTO CORCHETEA n_consecutivos CORCHETEC PUNTOCOMA		
+{:errorRepeticion = !grafica.controValores();;:}
 	;
 
 /*Gramatica Unir*/
-unir ::= UNIR SIGNO_DOPUNTO SIGNO_CORCHETEA h_tupla SIGNO_CORCHETEC SIGNO_PUNTOCOMA		
-{:errorRepeticion =! grafica.controTuplas(); grafica.setTuplas(tuplas); tuplas.clear();:}
+unir ::= UNIR DOPUNTO CORCHETEA h_tupla CORCHETEC PUNTOCOMA		
+{:errorRepeticion =! grafica.controTuplas();  System.out.println("agregando tuplas"); :}
 	;
 
 /*Gramatica H*/
-h_tupla ::= SIGNO_LLAVEA operation:valor1 SIGNO_COMA operation:valor2 SIGNO_LLAVEC  SIGNO_COMA  h_tupla	{:tuplas.add(new Tupla(valor1, valor2));:}
-	| SIGNO_LLAVEA operation:valor1 SIGNO_COMA operation:valor2 SIGNO_LLAVEC 							{:tuplas.add(new Tupla(valor1, valor2));:}
+h_tupla ::= LLAVEA operation:valor1 COMA operation:valor2 LLAVEC  COMA  h_tupla	{:try{grafica.getTuplas().add(new Tupla(valor1, valor2));}catch(Exception e){e.printStackTrace();}:}
+	| LLAVEA operation:valor1 COMA operation:valor2 LLAVEC 							{:try{grafica.getTuplas().add(new Tupla(valor1, valor2));}catch(Exception e){e.printStackTrace();}:}
 	| error	h_tupla 		{:/* capturar error @overide, recuperacion*/:}
 	;
 
 /*Gramatica Total*/
-l_total ::= TOTAL SIGNO_DOPUNTO o_decimal:numTotal SIGNO_PUNTOCOMA				
+l_total ::= TOTAL DOPUNTO o_decimal:numTotal PUNTOCOMA				
 {:errorRepeticion = !grafica.controlTotal(); grafica.setTotal(numTotal.doubleValue());:}
 	;
 
 /*Gramatica Titulo*/
-title ::= TITULO SIGNO_DOPUNTO IDD_COMILLAS:titulo SIGNO_PUNTOCOMA		
-{:errorRepeticion = !grafica.controTitle(); grafica.setTitulo(limpiarLexeme(titulo.getLexeme()));:}
-	;
+title ::= TITULO DOPUNTO  IDD:titulo 	PUNTOCOMA 	{:errorRepeticion = !grafica.controTitle(); grafica.setTitulo(limpiarLexeme(titulo.getLexeme())); System.out.println("Titulo "+grafica.getTitulo()+" agregado a grafica");:};
 
 /*Gramatica Eje Y*/
-y_eje ::= EJEY SIGNO_DOPUNTO SIGNO_CORCHETEA n_consecutivos SIGNO_CORCHETEC SIGNO_PUNTOCOMA		
-{:grafica.setValores(valores); valores.clear();:}
+y_eje ::= EJEY DOPUNTO CORCHETEA n_consecutivos CORCHETEC PUNTOCOMA		
+{:errorRepeticion = !grafica.controValores();  System.out.println("agregando valores"+grafica.getValores().get(0));:}
 	;
 
 /*Gramatica Eje X*/
-x_eje ::= EJEX SIGNO_DOPUNTO SIGNO_CORCHETEA i_tems SIGNO_CORCHETEC SIGNO_PUNTOCOMA		
-{:errorRepeticion = !grafica.controItems(); grafica.setItems(items); items.clear();:}
+x_eje ::= EJEX DOPUNTO CORCHETEA i_tems CORCHETEC PUNTOCOMA		
+{:errorRepeticion = !grafica.controItems();  System.out.println("agregando items "+ grafica.getItems().get(0));:}
 	;
 
 /*Gramatica Extra*/
-r_extra ::= EXTRA SIGNO_DOPUNTO IDD_COMILLAS:extra SIGNO_PUNTOCOMA		
+r_extra ::= EXTRA DOPUNTO   IDD:extra  PUNTOCOMA		
 {:errorRepeticion = !grafica.controExtra(); grafica.setExtra(limpiarLexeme(extra.getLexeme()));:}
 	;
 
 /*Gramatica Tipo*/
-p_tipo ::= TIPO SIGNO_DOPUNTO PORCENTAJE SIGNO_PUNTOCOMA			{:errorRepeticion = !grafica.controlTipo(); grafica.setEsCantidad(false); grafica.setYaTipo(true);:}
-	| TIPO SIGNO_DOPUNTO CANTIDAD SIGNO_PUNTOCOMA					{:errorRepeticion = !grafica.controlTipo(); grafica.setEsCantidad(true); grafica.setYaTipo(true);:}
+p_tipo ::= TIPO DOPUNTO PORCENTAJE PUNTOCOMA			{:errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(false); grafica.setYaTipo(true);:}
+	| TIPO DOPUNTO CANTIDAD PUNTOCOMA					{:errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(true); grafica.setYaTipo(true);:}
 	;
 
 /*Gramatica Numeros consecutivos*/
-n_consecutivos ::= operation:numero SIGNO_COMA n_consecutivos			{:valores.add(numero.doubleValue());:}
-	| operation:numero													{:valores.add(numero.doubleValue());:}
+n_consecutivos ::= o_decimal:numero COMA n_consecutivos			{:grafica.getValores().add(numero.doubleValue());:}
+	| o_decimal:numero											{:grafica.getValores().add(numero.doubleValue());:}
 	;
 
 /*Gramatica Numeros consecutivos*/
-i_tems ::= IDD_COMILLAS:item SIGNO_COMA i_tems		{:items.add(limpiarLexeme(item.getLexeme()));:}
-	| IDD_COMILLAS:item								{:items.add(limpiarLexeme(item.getLexeme()));:}
+i_tems ::=   IDD:item COMA i_tems 		{:grafica.getItems().add(limpiarLexeme(item.getLexeme()));:}
+	|   IDD:item 								{:grafica.getItems().add(limpiarLexeme(item.getLexeme()));:}
 	| error i_tems									{:/* capturar error @overide, recuperacion*/:}
 	;
 
 /*Gramatica para Ejecucion Finality*/
-f_ejecutar ::= EJECUTAR SIGNO_PARENTESISA IDD_COMILLAS:titulo SIGNO_PARENTESISC SIGNO_PUNTOCOMA f_ejecutar 	{:grafica.activarEjecucion(graficas, limpiarLexeme(titulo.getLexeme()));:}
-	| 																										{:contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs );:}
+f_ejecutar ::= EJECUTAR PARENTESISA  IDD:titulo  PARENTESISC PUNTOCOMA f_ejecutar 	{:grafica.activarEjecucion(graficas, limpiarLexeme(titulo.getLexeme()));:}
+	| 																				{:contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs ); System.out.println("Llegue al final desde CUP");:}
 	;
 
 /*Gramatica de operacion aritmetica*/
-operation ::= operation:numero1 SIGNO_MAS:operador operation:numero2		{:RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));:}
-	| operation:numero1 SIGNO_MENOS:operador operation:numero2				{:RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));:}
-	| operation:numero1 SIGNO_POR:operador operation:numero2				{:RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));:}
-	| operation:numero1 SIGNO_DIVISION:operador operation:numero2			{:RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));:}
+operation ::= operation:numero1 MAS:operador operation:numero2		{:RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));:}
+	| operation:numero1 MENOS:operador operation:numero2				{:RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("RESTA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));:}
+	| operation:numero1 POR:operador operation:numero2				{:RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("MULTIPLICACION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));:}
+	| operation:numero1 DIVISION:operador operation:numero2			{:RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("DIVISION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));:}
 	| NUMERO:num															{:RESULT = Integer.valueOf( num.getLexeme());:}
-	| SIGNO_PARENTESISA operation:operacion SIGNO_PARENTESISC				{:RESULT = operacion;:}
+	| PARENTESISA operation:operacion PARENTESISC				{:RESULT = operacion;:}
 	| error operation	  													{:/*error */:}
 	;
 
-o_decimal ::= o_decimal:numero1 SIGNO_MAS:operador o_decimal:numero2		{:RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));:}
-	| o_decimal:numero1 SIGNO_MENOS:operador o_decimal:numero2				{:RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));:}
-	| o_decimal:numero1 SIGNO_POR:operador o_decimal:numero2				{:RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));:}
-	| o_decimal:numero1 SIGNO_DIVISION:operador o_decimal:numero2			{:RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));:}
+o_decimal ::= o_decimal:numero1 MAS:operador o_decimal:numero2		{:RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));:}
+	| o_decimal:numero1 MENOS:operador o_decimal:numero2				{:RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));:}
+	| o_decimal:numero1 POR:operador o_decimal:numero2				{:RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));:}
+	| o_decimal:numero1 DIVISION:operador o_decimal:numero2			{:RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));:}
 	| NUMERO:num															{:RESULT = Integer.valueOf( num.getLexeme());:}
 	| DECIMAL:num															{:RESULT = Integer.valueOf( num.getLexeme());:}
-	| SIGNO_PARENTESISA o_decimal:operacion SIGNO_PARENTESISC				{:RESULT = operacion;:}
+	| PARENTESISA o_decimal:operacion PARENTESISC				{:RESULT = operacion;:}
 	| error o_decimal 														{::}
 	;

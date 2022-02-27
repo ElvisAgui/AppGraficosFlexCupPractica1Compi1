@@ -24,8 +24,8 @@
 
     <EditText
         android:id="@+id/areaText"
-        android:layout_width="394dp"
-        android:layout_height="426dp"
+        android:layout_width="389dp"
+        android:layout_height="471dp"
         android:autoText="false"
         android:background="#03DFFB"
         android:ems="10"

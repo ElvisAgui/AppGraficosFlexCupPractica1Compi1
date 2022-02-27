@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GraficosLexCup">
         <activity
+            android:name=".PantallasDeGraficos"
+            android:exported="false" />
+        <activity
+            android:name=".PantallasGraficas"
+            android:exported="false"
+            android:label="@string/title_activity_pantallas_graficas"
+            android:theme="@style/Theme.GraficosLexCup.NoActionBar" />
+        <activity
             android:name=".PantallaMenu"
             android:exported="false" />
         <activity

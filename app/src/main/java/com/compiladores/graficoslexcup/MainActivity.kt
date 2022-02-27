@@ -9,18 +9,22 @@ import android.widget.EditText
 import android.widget.Toast
 import com.compiladores.graficoslexcup.analizadores.*
 import com.compiladores.graficoslexcup.objetos.*;
+import com.compiladores.graficoslexcup.report.ContGraficos
 import com.compiladores.graficoslexcup.report.ErrorSinLex
+import com.compiladores.graficoslexcup.report.Operation
 import java.io.Reader
 import java.io.StringReader
+import java.util.ArrayList
 
  class MainActivity : AppCompatActivity() {
-    lateinit var archivoButton : Button
     lateinit var texArea: EditText
-    lateinit var lexicam: LexerAnalysis;
-   // lateinit var Parser: parser;
-    var errores : MutableList<ErrorSinLex> =mutableListOf()
-    var gra: Grafica = Grafica()
-    var texto: String?= null
+     var errores : ArrayList<ErrorSinLex> = arrayListOf()
+     var graficas : ArrayList<Grafica> = arrayListOf()
+     var operations: ArrayList<Operation> = arrayListOf()
+     var contGraficos:ContGraficos = ContGraficos(0,5)
+     var texto: String?= null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,41 +32,81 @@ import java.io.StringReader
     }
 
     fun onClick(view: View){
-        var cadena:String?=null
         texArea = findViewById(R.id.areaText)
-        texto = texArea.text.toString()
+        texto = texArea.toString()
+        texto = "def Barras{\n" +
+                "                titulo: \"hola1\";\n" +
+                "                ejex:[\"item1\", \"item2\"];\n" +
+                "                ejey:[5, 10+5];\n" +
+                "                unir:[{0,1}, {1,0}];\n " +
+                "}\n" +
+                "#esto es un comentario\n" +
+                "Def Pie{\n" +
+                "titulo: \"Grafica 2\";\n" +
+                "tipo: Cantidad;\n" +
+                "etiquetas: [\"Compi1\", \"Compi2\"];\n" +
+                "valores:[5, 10];\n" +
+                "total: 25;\n" +
+                "unir:[{0,1}, {1,0}];\n" +
+                "extra: \"Resto\";\n" +
+                "}\n" +
+                "def Barras{\n" +
+                "                titulo: \"hola\";\n" +
+                "                ejex:[\"item1\", \"item2\"];\n" +
+                "                ejey:[5, 10+5];\n" +
+                "                unir:[{0,1}, {1,0}];\n" +
+                "}\n"+
+                "Def Pie{\n" +
+                "titulo: \"Grafica 22\";\n" +
+                "tipo: Porcentaje; \n" +
+                "etiquetas: [\"Compi1\", \"Compi2\"];\n" +
+                "valores:[5, 10];\n" +
+                "unir:[{0,1}, {1,0}];\n" +
+                "extra: \"Resto\";\n" +
+                "}"
         val reader: Reader = StringReader(texto)
-        lexicam = LexerAnalysis(reader)
-      //  Parser = parser(lexicam)
+        val lexicam: LexerAnalysis = LexerAnalysis(reader)
+        val parserVar: parser = parser(lexicam)
         if(texto  == ""){
             Toast.makeText(this,"Area de Texto Vacio",Toast.LENGTH_LONG).show()
-        }else{
+        }else {
             try {
-               // Parser.parse()
-                // errores = Parser.errorsSinLexs
-
-               // Parser.operations.forEach(){
-                  //  println(it.nomOperation+it.ocurrencia)
-                    //cadena+=it.ocurrencia
-
-                Toast.makeText(this,cadena+"hola",Toast.LENGTH_LONG).show()
+                parserVar.parse()
+                graficas = parserVar.graficas
+                operations = parserVar.operations
+                contGraficos = parserVar.contGraficos
+                errores = parserVar.errorsSinLexs
+                Toast.makeText(this, "BIEN TEXTO ANALIZADO CON EXITO", Toast.LENGTH_LONG).show()
                 val lanzar = Intent(this, PantallaMenu::class.java)
-                lanzar.putExtra("pruesf",gra)
+                lanzar.putExtra("graficas", graficas as ArrayList<Grafica>?)
+                lanzar.putExtra("operations", operations as ArrayList<Operation>?)
+                lanzar.putExtra("errores", errores as ArrayList<ErrorSinLex>?)
+                lanzar.putExtra("contGraficos", contGraficos)
+                errores.forEach(){
+                    println("errores "+it.lexeme+ " "+ it.linea+" "+ it.descripcion)
+                }
+                graficas.forEach(){
+                    println("grafica ${it.titulo} ${it.contadorDeProduciones} ${it.toString()} ")
+                }
+                graficas.get(0).tuplas.forEach(){
+                    println(it.toString())
+                }
+                println("llegue hasta el final")
+
                 startActivity(lanzar)
-            }catch (exe:Exception){
-                println("error  ${exe.localizedMessage} hola ocmo estamoa s")
-                Toast.makeText(this,"ERRORRROROROR",Toast.LENGTH_LONG).show()
+                } catch (exe:Exception){
+                    println("error desde exception catch")
+                    errores = parserVar.errorsSinLexs
+                    errores.forEach(){
+                        println("errores "+it.lexeme+ " "+ it.linea+" "+ it.descripcion)
+                    }
+                    exe.printStackTrace()
+                    Toast.makeText(this, "ERROR FATAL ALGO NO HAZ ECHO BIEN", Toast.LENGTH_LONG).show()
+                }
+
             }
 
         }
 
-
-
     }
 
-
-
-
-
-
-}

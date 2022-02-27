@@ -7,4 +7,7 @@ class Pie( titulo: String?,
            tuplas: MutableList<Tupla>,
            items: MutableList<String>,
            valores: MutableList<Double>):Grafica( titulo, esCantidad , total, extra, tuplas, items, valores) {
+
+
+
 }
