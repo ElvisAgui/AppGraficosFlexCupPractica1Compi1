@@ -21,6 +21,7 @@ import java.util.ArrayList
      var errores : ArrayList<ErrorSinLex> = arrayListOf()
      var graficas : ArrayList<Grafica> = arrayListOf()
      var operations: ArrayList<Operation> = arrayListOf()
+     var listGraficasEjecutar: ArrayList<String> = arrayListOf()
      var contGraficos:ContGraficos = ContGraficos(0,5)
      var texto: String?= null
 
@@ -33,11 +34,11 @@ import java.util.ArrayList
 
     fun onClick(view: View){
         texArea = findViewById(R.id.areaText)
-        texto = texArea.toString()
-        texto = "def Barras{\n" +
+        texto = texArea.text.toString()
+        /*texto = "def Barras{\n" +
                 "                titulo: \"hola1\";\n" +
                 "                ejex:[\"item1\", \"item2\"];\n" +
-                "                ejey:[5, 10+5];\n" +
+                "                ejey:[70, 10+5];\n" +
                 "                unir:[{0,1}, {1,0}];\n " +
                 "}\n" +
                 "#esto es un comentario\n" +
@@ -60,10 +61,14 @@ import java.util.ArrayList
                 "titulo: \"Grafica 22\";\n" +
                 "tipo: Porcentaje; \n" +
                 "etiquetas: [\"Compi1\", \"Compi2\"];\n" +
-                "valores:[5, 10];\n" +
+                "valores:[200, 75];\n" +
                 "unir:[{0,1}, {1,0}];\n" +
                 "extra: \"Resto\";\n" +
-                "}"
+                "}\n"+
+                "Ejecutar (\"hola1\");"+
+                 "Ejecutar (\"hola\");"+
+                "Ejecutar (\"Grafica 2\");"+
+                "Ejecutar (\"Grafica 22\");"*/
         val reader: Reader = StringReader(texto)
         val lexicam: LexerAnalysis = LexerAnalysis(reader)
         val parserVar: parser = parser(lexicam)
@@ -76,12 +81,14 @@ import java.util.ArrayList
                 operations = parserVar.operations
                 contGraficos = parserVar.contGraficos
                 errores = parserVar.errorsSinLexs
+                listGraficasEjecutar = parserVar.listGraficasEjecucion
                 Toast.makeText(this, "BIEN TEXTO ANALIZADO CON EXITO", Toast.LENGTH_LONG).show()
                 val lanzar = Intent(this, PantallaMenu::class.java)
                 lanzar.putExtra("graficas", graficas as ArrayList<Grafica>?)
                 lanzar.putExtra("operations", operations as ArrayList<Operation>?)
                 lanzar.putExtra("errores", errores as ArrayList<ErrorSinLex>?)
                 lanzar.putExtra("contGraficos", contGraficos)
+                lanzar.putExtra("listGraficasEjecutar", listGraficasEjecutar as ArrayList<String>?)
                 errores.forEach(){
                     println("errores "+it.lexeme+ " "+ it.linea+" "+ it.descripcion)
                 }
@@ -92,7 +99,6 @@ import java.util.ArrayList
                     println(it.toString())
                 }
                 println("llegue hasta el final")
-
                 startActivity(lanzar)
                 } catch (exe:Exception){
                     println("error desde exception catch")
@@ -101,6 +107,13 @@ import java.util.ArrayList
                         println("errores "+it.lexeme+ " "+ it.linea+" "+ it.descripcion)
                     }
                     exe.printStackTrace()
+                    val lanzar = Intent(this, PantallaMenu::class.java)
+                    lanzar.putExtra("graficas", graficas as ArrayList<Grafica>?)
+                    lanzar.putExtra("operations", operations as ArrayList<Operation>?)
+                    lanzar.putExtra("errores", errores as ArrayList<ErrorSinLex>?)
+                    lanzar.putExtra("contGraficos", contGraficos)
+                    lanzar.putExtra("listGraficasEjecutar", listGraficasEjecutar as ArrayList<String>?)
+                    startActivity(lanzar)
                     Toast.makeText(this, "ERROR FATAL ALGO NO HAZ ECHO BIEN", Toast.LENGTH_LONG).show()
                 }
 

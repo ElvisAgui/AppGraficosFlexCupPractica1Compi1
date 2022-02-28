@@ -10,9 +10,9 @@ open class Grafica : Serializable {
     var esCantidad = false
     var total: Double?= null
     var extra: String?= null
-    var tuplas : MutableList<Tupla> = mutableListOf()
-    var items : MutableList<String> = mutableListOf()
-    var valores : MutableList<Double> = mutableListOf()
+    var tuplas : ArrayList<Tupla> = arrayListOf()
+    var items : ArrayList<String> = arrayListOf()
+    var valores : ArrayList<Double> = arrayListOf()
     var contadorDeProduciones: Int=0
     var yaTipo = false
     /*constructores*/
@@ -21,9 +21,9 @@ open class Grafica : Serializable {
         esCantidad: Boolean,
         total: Double?,
         extra: String?,
-        tuplas: MutableList<Tupla>,
-        items: MutableList<String>,
-        valores: MutableList<Double>
+        tuplas: ArrayList<Tupla>,
+        items: ArrayList<String>,
+        valores: ArrayList<Double>
     ) {
         this.titulo = titulo
         this.ejecutar = ejecutar
@@ -38,9 +38,9 @@ open class Grafica : Serializable {
     constructor()
     constructor(
         titulo: String?,
-        tuplas: MutableList<Tupla>,
-        items: MutableList<String>,
-        valores: MutableList<Double>
+        tuplas: ArrayList<Tupla>,
+        items: ArrayList<String>,
+        valores: ArrayList<Double>
     ) {
         this.titulo = titulo
         this.tuplas = tuplas
@@ -115,29 +115,18 @@ open class Grafica : Serializable {
         this.esCantidad = false
         this.total= null
         this.extra= null
-        this.tuplas  = mutableListOf()
-        this.items  = mutableListOf()
-        this.valores  = mutableListOf()
+        this.tuplas  = arrayListOf()
+        this.items  = arrayListOf()
+        this.valores  = arrayListOf()
         this.contadorDeProduciones=0
         this.yaTipo = false
     }
 
-    /**
-     * activa la ejecucion de una grafica
-     */
-    fun activarEjecucion(graficas: MutableList<Grafica>, tituloEjec: String){
-        graficas.forEach(){
-            if (it.titulo == tituloEjec){
-                it.ejecutar = true
-                return
-            }
-        }
-    }
 
     /**
      * une los errores sintaxicos con los errores lexicos
      */
-    fun  unionErroresLexiconConSintacticos(lexicanError: MutableList<ErrorSinLex>, sintacError: MutableList<ErrorSinLex>){
+    fun  unionErroresLexiconConSintacticos(lexicanError: ArrayList<ErrorSinLex>, sintacError: ArrayList<ErrorSinLex>){
         lexicanError.forEach(){
             sintacError.add(it)
         }

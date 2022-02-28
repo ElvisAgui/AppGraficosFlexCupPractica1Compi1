@@ -1,8 +1,9 @@
 package com.compiladores.graficoslexcup.report
 
 import com.compiladores.graficoslexcup.objetos.Grafica
+import java.io.Serializable
 
-class ErrorSinLex {
+class ErrorSinLex : Serializable {
     var lexeme: String?= null
     var linea: Int?= null
     var columna: Int?= null

@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GraficosLexCup">
         <activity
+            android:name=".ReportError"
+            android:exported="false" />
+        <activity
             android:name=".PantallasDeGraficos"
             android:exported="false" />
         <activity

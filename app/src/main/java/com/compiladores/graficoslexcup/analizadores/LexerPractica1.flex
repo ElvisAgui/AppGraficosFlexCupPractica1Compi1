@@ -54,7 +54,7 @@ TIPO = "tipo"
 TOTAL = "total"
 EXTRA = "extra" 
 EJECUTAR ="Ejecutar"
-IDD = ( \"({LETRA}|{NUMERO}|\s)* \")
+IDD = ( \"({LETRA}|{NUMERO}|\s)*\")
 
 /*comodin %{ para agregar codigo java*/
 %{

@@ -309,6 +309,7 @@ public class parser extends java_cup.runtime.lr_parser {
 	private int contadorBarra = 0;
 	private int contadorPie = 0;
 	private ManejadorGraficos manejadorGraficos = new ManejadorGraficos();
+	private ArrayList<String> listGraficasEjecucion = new ArrayList<>();
 
 	 /* Connect this parser to a scanner!*/
 	public parser(LexerAnalysis analizadorLexico) {
@@ -322,6 +323,10 @@ public class parser extends java_cup.runtime.lr_parser {
 	*/
 	public ContGraficos getContGraficos(){
 		return contGraficos;
+	}
+
+	public  ArrayList<String>  getListGraficasEjecucion(){
+		return listGraficasEjecucion;
 	}
 
 	public ArrayList<Operation> getOperations() {
@@ -357,7 +362,7 @@ public class parser extends java_cup.runtime.lr_parser {
 			
 		}
 	}
-
+	/*error de repeticion de elementeo regitrado en este */
 	public void reportErrorElementFaltante(String tipo){
 		if(errorRepeticion){
 			try{
@@ -371,11 +376,10 @@ public class parser extends java_cup.runtime.lr_parser {
 			
 		}
 	}
-
+	/*error de sintays son reflejados aqui y guardados*/
 	@Override
         public void syntax_error(Symbol tok) {
 			try{
-				List<Integer> listEscape=expected_token_ids();
 				Token token = (Token) tok.value;
 				report_error("Error Sintactico con el  Token:"+ token.getLexeme()+" este no pertenece a la estructura - linea: "+token.getLine()+" - columna: "+token.getColumn() + "\n",null);
 				String descripcion = "Se esperaba ";
@@ -385,13 +389,6 @@ public class parser extends java_cup.runtime.lr_parser {
 			}
 			
 		}
-
-	 @Override
-    public List<Integer> expected_token_ids() {
-        return super.expected_token_ids();
-    }
-
-
 	
 
 
@@ -482,7 +479,7 @@ class CUP$parser$actions {
           case 6: // comodin_a ::= a_barra 
             {
               Object RESULT =null;
-		graficas.add(new Barra(grafica.getTitulo(),grafica.getTuplas(),grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorBarra++; 
+		try{graficas.add(new Barra(grafica.getTitulo(),grafica.getTuplas(),grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorBarra++; }catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("comodin_a",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -545,7 +542,7 @@ class CUP$parser$actions {
           case 13: // comodin_b ::= b_pie 
             {
               Object RESULT =null;
-		graficas.add(new Pie(grafica.getTitulo(),grafica.getEsCantidad(), grafica.getTotal(), grafica.getExtra(), grafica.getTuplas(), grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorPie++;
+		try{graficas.add(new Pie(grafica.getTitulo(),grafica.getEsCantidad(), grafica.getTotal(), grafica.getExtra(), grafica.getTuplas(), grafica.getItems(),grafica.getValores())); grafica.limpiarGrafica(); contadorPie++;}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("comodin_b",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -653,7 +650,7 @@ class CUP$parser$actions {
           case 25: // unir ::= UNIR DOPUNTO CORCHETEA h_tupla CORCHETEC PUNTOCOMA 
             {
               Object RESULT =null;
-		errorRepeticion =! grafica.controTuplas();  System.out.println("agregando tuplas"); 
+		errorRepeticion =! grafica.controTuplas();
               CUP$parser$result = parser.getSymbolFactory().newSymbol("unir",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -703,7 +700,7 @@ class CUP$parser$actions {
               Object RESULT =null;
 		int numTotalleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int numTotalright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Integer numTotal = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		Double numTotal = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		errorRepeticion = !grafica.controlTotal(); grafica.setTotal(numTotal.doubleValue());
               CUP$parser$result = parser.getSymbolFactory().newSymbol("l_total",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -716,7 +713,7 @@ class CUP$parser$actions {
 		int tituloleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int tituloright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token titulo = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		errorRepeticion = !grafica.controTitle(); grafica.setTitulo(limpiarLexeme(titulo.getLexeme())); System.out.println("Titulo "+grafica.getTitulo()+" agregado a grafica");
+		try{errorRepeticion = !grafica.controTitle(); grafica.setTitulo(limpiarLexeme(titulo.getLexeme()));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("title",5, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -725,7 +722,7 @@ class CUP$parser$actions {
           case 31: // y_eje ::= EJEY DOPUNTO CORCHETEA n_consecutivos CORCHETEC PUNTOCOMA 
             {
               Object RESULT =null;
-		errorRepeticion = !grafica.controValores();  System.out.println("agregando valores"+grafica.getValores().get(0));
+		try{errorRepeticion = !grafica.controValores();  System.out.println("agregando valores"+grafica.getValores().get(0));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("y_eje",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -734,7 +731,7 @@ class CUP$parser$actions {
           case 32: // x_eje ::= EJEX DOPUNTO CORCHETEA i_tems CORCHETEC PUNTOCOMA 
             {
               Object RESULT =null;
-		errorRepeticion = !grafica.controItems();  System.out.println("agregando items "+ grafica.getItems().get(0));
+		try{errorRepeticion = !grafica.controItems();  System.out.println("agregando items "+ grafica.getItems().get(0));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("x_eje",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -746,7 +743,7 @@ class CUP$parser$actions {
 		int extraleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int extraright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token extra = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		errorRepeticion = !grafica.controExtra(); grafica.setExtra(limpiarLexeme(extra.getLexeme()));
+		try{errorRepeticion = !grafica.controExtra(); grafica.setExtra(limpiarLexeme(extra.getLexeme()));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("r_extra",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -755,7 +752,7 @@ class CUP$parser$actions {
           case 34: // p_tipo ::= TIPO DOPUNTO PORCENTAJE PUNTOCOMA 
             {
               Object RESULT =null;
-		errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(false); grafica.setYaTipo(true);
+		try{errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(false); grafica.setYaTipo(true);}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("p_tipo",11, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -764,7 +761,7 @@ class CUP$parser$actions {
           case 35: // p_tipo ::= TIPO DOPUNTO CANTIDAD PUNTOCOMA 
             {
               Object RESULT =null;
-		errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(true); grafica.setYaTipo(true);
+		try{errorRepeticion = grafica.controlTipo(); grafica.setEsCantidad(true); grafica.setYaTipo(true);}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("p_tipo",11, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -775,8 +772,8 @@ class CUP$parser$actions {
               Object RESULT =null;
 		int numeroleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int numeroright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Integer numero = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		grafica.getValores().add(numero.doubleValue());
+		Double numero = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		try{grafica.getValores().add(numero.doubleValue());}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("n_consecutivos",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -787,8 +784,8 @@ class CUP$parser$actions {
               Object RESULT =null;
 		int numeroleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numeroright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Integer numero = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		grafica.getValores().add(numero.doubleValue());
+		Double numero = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		try{grafica.getValores().add(numero.doubleValue());}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("n_consecutivos",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -800,7 +797,7 @@ class CUP$parser$actions {
 		int itemleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int itemright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Token item = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		grafica.getItems().add(limpiarLexeme(item.getLexeme()));
+		try{grafica.getItems().add(limpiarLexeme(item.getLexeme()));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("i_tems",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -812,7 +809,7 @@ class CUP$parser$actions {
 		int itemleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int itemright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Token item = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		grafica.getItems().add(limpiarLexeme(item.getLexeme()));
+		try{grafica.getItems().add(limpiarLexeme(item.getLexeme()));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("i_tems",14, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -833,7 +830,7 @@ class CUP$parser$actions {
 		int tituloleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
 		int tituloright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Token titulo = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		grafica.activarEjecucion(graficas, limpiarLexeme(titulo.getLexeme()));
+		try{listGraficasEjecucion.add(limpiarLexeme(titulo.getLexeme()));}catch(Exception e){e.printStackTrace();} 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("f_ejecutar",12, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -842,7 +839,7 @@ class CUP$parser$actions {
           case 42: // f_ejecutar ::= 
             {
               Object RESULT =null;
-		contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs ); System.out.println("Llegue al final desde CUP");
+		try{contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs );}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("f_ejecutar",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -860,7 +857,7 @@ class CUP$parser$actions {
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));
+		try{RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -878,7 +875,7 @@ class CUP$parser$actions {
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("RESTA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));
+		try{RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Resta("RESTA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));         }catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -896,7 +893,7 @@ class CUP$parser$actions {
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("MULTIPLICACION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));
+		try{RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Multiplicacion("MULTIPLICACION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -914,7 +911,7 @@ class CUP$parser$actions {
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("DIVISION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));
+		try{RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Division("DIVISION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));      }catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -926,7 +923,7 @@ class CUP$parser$actions {
 		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Token num = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = Integer.valueOf( num.getLexeme());
+		try{RESULT = Integer.valueOf( num.getLexeme());}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -938,7 +935,7 @@ class CUP$parser$actions {
 		int operacionleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operacionright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Integer operacion = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		RESULT = operacion;
+		try{RESULT = operacion;}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("operation",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -955,17 +952,17 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 50: // o_decimal ::= o_decimal MAS o_decimal 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numero1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int numero1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Integer numero1 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Double numero1 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int operadorleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operadorright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token operador = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()+numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));
+		Double numero2 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		try{RESULT = new Double(numero1.doubleValue()+numero2.doubleValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"+"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -973,17 +970,17 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 51: // o_decimal ::= o_decimal MENOS o_decimal 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numero1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int numero1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Integer numero1 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Double numero1 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int operadorleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operadorright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token operador = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()-numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));
+		Double numero2 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		try{RESULT = new Double(numero1.doubleValue()-numero2.doubleValue()); operations.add(new Resta("RESTA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"-"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -991,17 +988,17 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 52: // o_decimal ::= o_decimal POR o_decimal 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numero1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int numero1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Integer numero1 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Double numero1 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int operadorleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operadorright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token operador = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()*numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));
+		Double numero2 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		try{RESULT = new Double(numero1.doubleValue()*numero2.doubleValue()); operations.add(new Multiplicacion("MULTIPLICACION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"*"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1009,17 +1006,17 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 53: // o_decimal ::= o_decimal DIVISION o_decimal 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numero1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int numero1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Integer numero1 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		Double numero1 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int operadorleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operadorright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Token operador = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int numero2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numero2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Integer numero2 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = new Integer(numero1.intValue()/numero2.intValue()); operations.add(new Suma("SUMA",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));
+		Double numero2 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		try{RESULT = new Double(numero1.doubleValue()/numero2.doubleValue()); operations.add(new Division("DIVISION",operador.getLine(),operador.getColumn(),String.valueOf(numero1+"/"+numero2)));}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1027,11 +1024,11 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 54: // o_decimal ::= NUMERO 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Token num = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = Integer.valueOf( num.getLexeme());
+		try{RESULT = Double.valueOf( num.getLexeme());}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1039,11 +1036,11 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 55: // o_decimal ::= DECIMAL 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int numleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int numright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Token num = (Token)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		RESULT = Integer.valueOf( num.getLexeme());
+		try{RESULT = Double.valueOf( num.getLexeme());}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1051,11 +1048,11 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 56: // o_decimal ::= PARENTESISA o_decimal PARENTESISC 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		int operacionleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int operacionright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Integer operacion = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		RESULT = operacion;
+		Double operacion = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		try{RESULT = operacion;}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1063,7 +1060,7 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 57: // o_decimal ::= error o_decimal 
             {
-              Integer RESULT =null;
+              Double RESULT =null;
 		
               CUP$parser$result = parser.getSymbolFactory().newSymbol("o_decimal",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
