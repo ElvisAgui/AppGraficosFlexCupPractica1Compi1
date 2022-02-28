@@ -9,7 +9,7 @@ import java.util.List;
 /* Codigo java del parser*/
 parser code {:
 
-/*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*/
+/*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*/
 	
 	private ArrayList<Grafica> graficas=new ArrayList<>();
 	private Grafica grafica = new Grafica();
@@ -64,7 +64,7 @@ parser code {:
 		if(errorRepeticion){
 			try{
 				//reportar error repeticion 
-				String descripcion = "este elemento esta repetido: "+tipo;
+				String descripcion = "este elemento esta\nrepetido: "+tipo;
 				errorsSinLexs.add(new ErrorSinLex("------",0,0,descripcion, true));
 				errorRepeticion = false;
 			}catch(Exception e){
@@ -78,7 +78,7 @@ parser code {:
 		if(errorRepeticion){
 			try{
 				//reportar error repeticion 
-				String descripcion = "Grafica con datos faltantes en grafica o datos Repetidos: "+tipo;
+				String descripcion = " Grafica con datos \n faltantes en grafica \n o datos Repetidos: "+tipo;
 				errorsSinLexs.add(new ErrorSinLex("----",0,0, descripcion, true));
 				errorRepeticion = false;
 			}catch(Exception e){
@@ -93,7 +93,7 @@ parser code {:
 			try{
 				Token token = (Token) tok.value;
 				report_error("Error Sintactico con el  Token:"+ token.getLexeme()+" este no pertenece a la estructura - linea: "+token.getLine()+" - columna: "+token.getColumn() + "\n",null);
-				String descripcion = "Se esperaba ";
+				String descripcion = " No pertenece a \n al estructura";
 				errorsSinLexs.add(new ErrorSinLex(token.getLexeme(), token.getLine(), token.getColumn(), descripcion, true));
 			}catch(Exception e){
 					e.printStackTrace();
@@ -219,7 +219,7 @@ i_tems ::=   IDD:item COMA i_tems 		{:try{grafica.getItems().add(limpiarLexeme(i
 
 /*Gramatica para Ejecucion Finality*/
 f_ejecutar ::= EJECUTAR PARENTESISA  IDD:titulo  PARENTESISC PUNTOCOMA f_ejecutar 	{:try{listGraficasEjecucion.add(limpiarLexeme(titulo.getLexeme()));}catch(Exception e){e.printStackTrace();} :}
-	| 																				{:try{contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs );}catch(Exception e){e.printStackTrace();}:}
+	| 																				{:try{contGraficos = new ContGraficos(contadorBarra, contadorPie);}catch(Exception e){e.printStackTrace();}:}
 	;
 
 /*Gramatica de operacion aritmetica*/

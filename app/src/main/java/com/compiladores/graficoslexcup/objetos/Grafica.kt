@@ -126,12 +126,18 @@ open class Grafica : Serializable {
     /**
      * une los errores sintaxicos con los errores lexicos
      */
-    fun  unionErroresLexiconConSintacticos(lexicanError: ArrayList<ErrorSinLex>, sintacError: ArrayList<ErrorSinLex>){
-        lexicanError.forEach(){
-            sintacError.add(it)
-        }
-        LexerAnalysis.errorsSinLexs.clear()
 
+
+
+    companion object {
+        @JvmStatic
+        fun unionErroresLexiconConSintacticos(lexicanError: ArrayList<ErrorSinLex>, sintacError: ArrayList<ErrorSinLex>){
+            lexicanError.forEach(){
+                sintacError.add(it)
+            }
+            LexerAnalysis.errorsSinLexs.clear()
+
+        }
     }
 
     override fun toString(): String {

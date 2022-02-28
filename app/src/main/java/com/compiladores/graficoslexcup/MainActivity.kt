@@ -35,40 +35,6 @@ import java.util.ArrayList
     fun onClick(view: View){
         texArea = findViewById(R.id.areaText)
         texto = texArea.text.toString()
-        /*texto = "def Barras{\n" +
-                "                titulo: \"hola1\";\n" +
-                "                ejex:[\"item1\", \"item2\"];\n" +
-                "                ejey:[70, 10+5];\n" +
-                "                unir:[{0,1}, {1,0}];\n " +
-                "}\n" +
-                "#esto es un comentario\n" +
-                "Def Pie{\n" +
-                "titulo: \"Grafica 2\";\n" +
-                "tipo: Cantidad;\n" +
-                "etiquetas: [\"Compi1\", \"Compi2\"];\n" +
-                "valores:[5, 10];\n" +
-                "total: 25;\n" +
-                "unir:[{0,1}, {1,0}];\n" +
-                "extra: \"Resto\";\n" +
-                "}\n" +
-                "def Barras{\n" +
-                "                titulo: \"hola\";\n" +
-                "                ejex:[\"item1\", \"item2\"];\n" +
-                "                ejey:[5, 10+5];\n" +
-                "                unir:[{0,1}, {1,0}];\n" +
-                "}\n"+
-                "Def Pie{\n" +
-                "titulo: \"Grafica 22\";\n" +
-                "tipo: Porcentaje; \n" +
-                "etiquetas: [\"Compi1\", \"Compi2\"];\n" +
-                "valores:[200, 75];\n" +
-                "unir:[{0,1}, {1,0}];\n" +
-                "extra: \"Resto\";\n" +
-                "}\n"+
-                "Ejecutar (\"hola1\");"+
-                 "Ejecutar (\"hola\");"+
-                "Ejecutar (\"Grafica 2\");"+
-                "Ejecutar (\"Grafica 22\");"*/
         val reader: Reader = StringReader(texto)
         val lexicam: LexerAnalysis = LexerAnalysis(reader)
         val parserVar: parser = parser(lexicam)
@@ -81,6 +47,7 @@ import java.util.ArrayList
                 operations = parserVar.operations
                 contGraficos = parserVar.contGraficos
                 errores = parserVar.errorsSinLexs
+                Grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs, errores)
                 listGraficasEjecutar = parserVar.listGraficasEjecucion
                 Toast.makeText(this, "BIEN TEXTO ANALIZADO CON EXITO", Toast.LENGTH_LONG).show()
                 val lanzar = Intent(this, PantallaMenu::class.java)
@@ -103,6 +70,7 @@ import java.util.ArrayList
                 } catch (exe:Exception){
                     println("error desde exception catch")
                     errores = parserVar.errorsSinLexs
+                    Grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs, errores)
                     errores.forEach(){
                         println("errores "+it.lexeme+ " "+ it.linea+" "+ it.descripcion)
                     }

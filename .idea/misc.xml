@@ -5,9 +5,10 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_pantalla_menu.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_pantalla_report_graficas.xml" value="0.36656282450674976" />
         <entry key="app/src/main/res/layout/activity_pantallas_de_graficos.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_pantallas_graficas.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/activity_report_error.xml" value="0.15482456140350878" />
+        <entry key="app/src/main/res/layout/activity_report_error.xml" value="0.3672182821118991" />
         <entry key="app/src/main/res/layout/content_scrolling.xml" value="0.15482456140350878" />
         <entry key="app/src/main/res/menu/menu_pantallas_graficas.xml" value="0.15482456140350878" />
       </map>

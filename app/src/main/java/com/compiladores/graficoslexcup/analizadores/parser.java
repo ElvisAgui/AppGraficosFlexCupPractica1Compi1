@@ -298,7 +298,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
-/*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*/
+/*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*/
 	
 	private ArrayList<Grafica> graficas=new ArrayList<>();
 	private Grafica grafica = new Grafica();
@@ -353,8 +353,8 @@ public class parser extends java_cup.runtime.lr_parser {
 		if(errorRepeticion){
 			try{
 				//reportar error repeticion 
-				String descripcion = "este elemento esta repetido: "+tipo;
-				errorsSinLexs.add(new ErrorSinLex("error de repeticion o dato faltante ",0,0,descripcion, true));
+				String descripcion = "este elemento esta\nrepetido: "+tipo;
+				errorsSinLexs.add(new ErrorSinLex("------",0,0,descripcion, true));
 				errorRepeticion = false;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -367,8 +367,8 @@ public class parser extends java_cup.runtime.lr_parser {
 		if(errorRepeticion){
 			try{
 				//reportar error repeticion 
-				String descripcion = "Grafica con datos faltantes en grafica: "+tipo;
-				errorsSinLexs.add(new ErrorSinLex("erro repeticion o dato faltante",0,0, descripcion, true));
+				String descripcion = " Grafica con datos \n faltantes en grafica \n o datos Repetidos: "+tipo;
+				errorsSinLexs.add(new ErrorSinLex("----",0,0, descripcion, true));
 				errorRepeticion = false;
 			}catch(Exception e){
 				e.printStackTrace();
@@ -382,7 +382,7 @@ public class parser extends java_cup.runtime.lr_parser {
 			try{
 				Token token = (Token) tok.value;
 				report_error("Error Sintactico con el  Token:"+ token.getLexeme()+" este no pertenece a la estructura - linea: "+token.getLine()+" - columna: "+token.getColumn() + "\n",null);
-				String descripcion = "Se esperaba ";
+				String descripcion = " No pertenece a \n al estructura";
 				errorsSinLexs.add(new ErrorSinLex(token.getLexeme(), token.getLine(), token.getColumn(), descripcion, true));
 			}catch(Exception e){
 					e.printStackTrace();

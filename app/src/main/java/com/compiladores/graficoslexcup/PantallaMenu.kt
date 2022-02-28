@@ -76,10 +76,11 @@ class PantallaMenu : AppCompatActivity() {
      */
     fun onClickReportE(view: View){
         if (!errores.isEmpty()){
-
+            val lanzar1 = Intent(this, ReportError::class.java)
+            lanzar1.putExtra("errores", errores as java.util.ArrayList<ErrorSinLex>?)
+            startActivity(lanzar1)
         }else{
             Toast.makeText(this, "No tiene Errores", Toast.LENGTH_LONG).show()
-
         }
     }
 
@@ -88,7 +89,10 @@ class PantallaMenu : AppCompatActivity() {
      */
     fun onClickMostrarReporte(view: View){
         if (errores.isEmpty()){
-
+            val lanzar1 = Intent(this, PantallaReportGraficas::class.java)
+            lanzar1.putExtra("contGraficos", contGraficos as ContGraficos)
+            lanzar1.putExtra("operations", operations as java.util.ArrayList<Operation>?)
+            startActivity(lanzar1)
         }else{
             Toast.makeText(this, "No Puedes acceder a los Graficos ya que exiten Errores en el texto de entrada", Toast.LENGTH_LONG).show()
             Toast.makeText(this, "Revisar Reporte de ERRORES", Toast.LENGTH_LONG).show()

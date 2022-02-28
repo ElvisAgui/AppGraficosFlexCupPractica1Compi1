@@ -42,9 +42,8 @@ class PantallasDeGraficos : AppCompatActivity() {
         setContentView(R.layout.activity_pantallas_de_graficos)
         layout = findViewById<View>(R.id.layout) as LinearLayout
         val bun = intent.extras
-        graficas = bun?.get("graficas") as MutableList<Grafica>
+        graficas = bun?.get("graficas") as ArrayList<Grafica>
         separarGraficas()
-
         /*se itera n veces la grafie Barras*/
         var index=0
         barras.forEach(){
