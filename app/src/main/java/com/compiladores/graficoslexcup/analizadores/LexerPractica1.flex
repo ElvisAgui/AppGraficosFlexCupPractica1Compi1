@@ -19,7 +19,7 @@ import java.util.List;
 
 
 LETRA = [a-zA-Z]
-WhiteSpace = [\r|\n|\r\n] | [ \t\f]
+WhiteSpace = [\r|\n|\r\n|\s\t] | [\t\f]
 SIGNO_MENOS = "-"
 SIGNO_MAS = "+"
 SIGNO_POR = "*"

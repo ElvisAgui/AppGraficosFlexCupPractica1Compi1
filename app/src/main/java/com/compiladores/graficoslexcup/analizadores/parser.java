@@ -839,7 +839,7 @@ class CUP$parser$actions {
           case 42: // f_ejecutar ::= 
             {
               Object RESULT =null;
-		try{contGraficos = new ContGraficos(contadorBarra, contadorPie); grafica.unionErroresLexiconConSintacticos(LexerAnalysis.errorsSinLexs,errorsSinLexs );}catch(Exception e){e.printStackTrace();}
+		try{contGraficos = new ContGraficos(contadorBarra, contadorPie);}catch(Exception e){e.printStackTrace();}
               CUP$parser$result = parser.getSymbolFactory().newSymbol("f_ejecutar",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
